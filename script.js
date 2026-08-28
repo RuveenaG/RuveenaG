@@ -32,6 +32,34 @@ if (nav) {
   onScroll();
 }
 
+// ---------- mobile hamburger menu ----------
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+if (navToggle && navLinks) {
+  const closeMenu = () => {
+    navToggle.setAttribute('aria-expanded', 'false');
+    navLinks.classList.remove('is-open');
+    document.body.classList.remove('nav-open');
+  };
+  const openMenu = () => {
+    navToggle.setAttribute('aria-expanded', 'true');
+    navLinks.classList.add('is-open');
+    document.body.classList.add('nav-open');
+  };
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.contains('is-open');
+    isOpen ? closeMenu() : openMenu();
+  });
+  // close the menu whenever a nav link is tapped
+  navLinks.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', closeMenu);
+  });
+  // close on resize back to desktop width
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) closeMenu();
+  });
+}
+
 // ---------- scroll reveal ----------
 const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
 if ('IntersectionObserver' in window) {

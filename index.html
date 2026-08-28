@@ -5,21 +5,89 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ruveena Gamage — Portfolio</title>
 <meta name="description" content="Ruveena Gamage — Business Information Systems undergraduate, aspiring project manager, and cross-border competitor.">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=4">
+<style>
+/* ===== Mobile nav overlay — inlined so it always applies, even if style.css is cached ===== */
+@media (max-width: 900px){
+  .nav-toggle{ display: flex !important; }
+  .nav-links{
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    background: #050b08 !important;
+    background-image:
+      linear-gradient(180deg, #060f0a 0%, #050b08 60%),
+      radial-gradient(ellipse 70% 45% at 50% 8%, rgba(29,100,73,0.35), transparent 60%) !important;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform .5s cubic-bezier(.22,.61,.36,1), opacity .4s cubic-bezier(.22,.61,.36,1), visibility 0s linear .5s;
+    z-index: 99999 !important;
+  }
+  .nav-links.is-open{
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    transition: transform .5s cubic-bezier(.22,.61,.36,1), opacity .4s cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s;
+  }
+  .nav-links a{
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 1.05rem !important;
+    letter-spacing: 0.04em;
+    color: #f3efe3 !important;
+    padding: 1.15rem 0;
+    width: min(280px, 78vw);
+    border-bottom: 1px solid rgba(201,168,66,0.16);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: color .3s ease;
+  }
+  .nav-links.is-open a{
+    animation: navLinkIn .5s cubic-bezier(.22,.61,.36,1) forwards;
+  }
+  .nav-links.is-open a:nth-child(1){ animation-delay: .12s; }
+  .nav-links.is-open a:nth-child(2){ animation-delay: .17s; }
+  .nav-links.is-open a:nth-child(3){ animation-delay: .22s; }
+  .nav-links.is-open a:nth-child(4){ animation-delay: .27s; }
+  .nav-links.is-open a:nth-child(5){ animation-delay: .32s; }
+  .nav-links.is-open a:nth-child(6){ animation-delay: .37s; }
+  .nav-links.is-open a:nth-child(7){ animation-delay: .42s; }
+  @keyframes navLinkIn{ to{ opacity: 1; transform: translateY(0); } }
+  .nav-links a:first-child{ border-top: 1px solid rgba(201,168,66,0.16); }
+  .nav-links a .num{
+    font-size: 0.7rem;
+    color: #c9a441;
+    opacity: 0.8;
+  }
+  .nav-links a:active{ color: #c9a441 !important; }
+  body.nav-open{ overflow: hidden; }
+}
+</style>
 </head>
 <body>
 
 <nav class="site-nav">
   <div class="wrap">
     <a href="#top" class="nav-mark"><span class="dot"></span> Ruveena Gamage</a>
-    <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
-      <a href="#skills">Skills</a>
-      <a href="#events">Events</a>
-      <a href="#leadership">Leadership</a>
-      <a href="#contact">Contact</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a href="#about"><span class="num">01</span>About</a>
+      <a href="#experience"><span class="num">02</span>Experience</a>
+      <a href="#projects"><span class="num">03</span>Projects</a>
+      <a href="#skills"><span class="num">04</span>Skills</a>
+      <a href="#events"><span class="num">05</span>Events</a>
+      <a href="#leadership"><span class="num">06</span>Leadership</a>
+      <a href="#contact"><span class="num">07</span>Contact</a>
     </div>
   </div>
 </nav>
@@ -52,7 +120,7 @@
       <div class="portrait-stage">
         <div class="hero-portrait-glow"></div>
         <div class="hero-portrait-frame">
-          <img class="hero-portrait-img" src="images/myphoto.jpeg" alt="Portrait of Ruveena Gamage">
+          <img class="hero-portrait-img" src="images/myphoto.jpeg" alt="Portrait of Ruveena Gamage" onerror="this.closest('.hero-portrait-frame').style.display='none'">
         </div>
         <span class="focus-corner corner-tl"></span>
         <span class="focus-corner corner-tr"></span>
@@ -160,7 +228,9 @@ In 2026, I represented Sri Lanka at the MaxUp Global Finals in Astana, Kazakhsta
 
       <div class="project-card">
         <div class="project-photo">
-          <img src="images/uniskill-screenshot.jpg" alt="UniSkill campus skill-sharing and peer-tutoring platform screenshot">
+          <img src="images/uniskill-screenshot.jpg" alt="UniSkill campus skill-sharing and peer-tutoring platform screenshot" onerror="this.style.display='none'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="m21 15-5-5L5 19"/></svg>
+          <span>Add screenshot — save as uniskill-screenshot.jpg</span>
         </div>
         <span class="project-num">04 / Solo Build</span>
         <h3>UniSkill</h3>

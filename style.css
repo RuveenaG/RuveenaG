@@ -118,6 +118,7 @@ section{ padding: 7.5rem 0; position: relative; }
 .nav-mark{
   font-family: var(--font-display); font-size: 1.15rem; letter-spacing: 0.02em;
   display:flex; align-items:center; gap:.6rem;
+  z-index: 101;
 }
 .nav-mark .dot{ width:6px; height:6px; border-radius:50%; background: var(--gold); box-shadow: 0 0 10px var(--gold); }
 .nav-links{ display:flex; gap: 2.2rem; }
@@ -132,7 +133,25 @@ section{ padding: 7.5rem 0; position: relative; }
 }
 .nav-links a:hover{ color: var(--ivory); }
 .nav-links a:hover::after{ width:100%; }
-.nav-toggle{ display:none; }
+
+/* hamburger toggle — hidden on desktop */
+.nav-toggle{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 34px; height: 34px;
+  background: none; border: none; cursor: pointer;
+  z-index: 101;
+  padding: 0;
+}
+.nav-toggle span{
+  display:block; width: 100%; height: 1.5px; background: var(--ivory);
+  transition: transform .35s var(--ease), opacity .3s var(--ease);
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(1){ transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2){ opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3){ transform: translateY(-6.5px) rotate(-45deg); }
 
 /* ---------- back link (event pages) ---------- */
 .back-link{
@@ -344,7 +363,7 @@ section{ padding: 7.5rem 0; position: relative; }
   color: var(--ivory-dim); display:flex; align-items:center; gap:.5rem;
   transition: border-color .3s, color .3s, transform .3s;
 }
-.chip svg{ width:14px; height:14px; stroke: var(--gold-soft); }
+.chip svg{ width:14px; height:14px; stroke: var(--gold-soft); flex-shrink: 0; }
 .chip:hover{ border-color: var(--gold-dim); color: var(--ivory); transform: translateY(-2px); }
 
 .scroll-cue{
@@ -380,7 +399,7 @@ section{ padding: 7.5rem 0; position: relative; }
   padding: 1.1rem 0; border-bottom: 1px solid var(--panel-line);
   font-size: 0.92rem;
 }
-.fact-list li span:first-child{ font-family: var(--font-mono); color: var(--sage); text-transform: uppercase; letter-spacing:.08em; font-size: .72rem; padding-top:.2rem; }
+.fact-list li span:first-child{ font-family: var(--font-mono); color: var(--sage); text-transform: uppercase; letter-spacing:.08em; font-size: .72rem; padding-top:.2rem; flex-shrink: 0; }
 .fact-list li span:last-child{ color: var(--ivory); text-align:right; max-width: 60%; }
 
 /* ---------- experience ---------- */
@@ -632,22 +651,73 @@ footer{ padding: 3rem 0; text-align:center; color: var(--sage); font-size: .8rem
 .photo-gallery .slot span{ font-family: var(--font-mono); font-size:.62rem; letter-spacing:.08em; text-transform: uppercase; color: var(--sage); text-align:center; padding:0 .8rem; }
 .photo-gallery .slot.wide{ grid-column: span 2; }
 
-/* ---------- responsive ---------- */
+/* =========================================================
+   RESPONSIVE — tablet
+   ========================================================= */
 @media (max-width: 900px){
   .about-grid, .split, .event-body{ grid-template-columns: 1fr; gap: 2.6rem; }
   .project-grid{ grid-template-columns: 1fr; }
   .skills-grid{ grid-template-columns: 1fr 1fr; }
   .events-grid{ grid-template-columns: 1fr 1fr; }
   .photo-gallery{ grid-template-columns: repeat(2,1fr); }
-  .nav-links{ display:none; }
+
+  /* Mobile hamburger nav styling now lives inline in index.html <head>,
+     so it always applies even if this stylesheet is served from cache. */
+
   .hero-flex{ grid-template-columns: 1fr; text-align:center; gap: 2.4rem; }
   .hero-portrait{ order: -1; }
+  .hero-portrait-frame{ width: min(220px, 62vw); }
+  .hero-sub{ margin-inline: auto; }
   .hero-meta{ justify-content:center; }
 }
+
+/* =========================================================
+   RESPONSIVE — phones
+   ========================================================= */
 @media (max-width: 620px){
   .events-grid{ grid-template-columns: 1fr; }
   .skills-grid{ grid-template-columns: 1fr; }
   .photo-gallery{ grid-template-columns: 1fr; }
-  section{ padding: 5rem 0; }
+  section{ padding: 4rem 0; }
   .event-meta-row{ gap: 1.4rem; }
+
+  .wrap{ width: min(560px, 92%); }
+
+  .site-nav{ padding: 1.1rem 0; }
+  .nav-mark{ font-size: 1rem; }
+
+  .hero{ padding-top: 5.5rem; min-height: auto; padding-bottom: 4rem; }
+  .hero h1{ font-size: clamp(2.1rem, 11vw, 2.8rem); }
+  .hero-role{ flex-wrap: wrap; justify-content: center; text-align: center; }
+  .hero-sub{ font-size: .96rem; }
+  .hero-meta{ gap: .7rem; }
+  .chip{ font-size: .7rem; padding: .5rem .85rem; }
+  .scroll-cue{ display: none; }
+
+  .section-head{ margin-bottom: 2.2rem; }
+  .section-head p{ max-width: 100%; }
+
+  .about-grid p{ font-size: .98rem; }
+  .fact-list li{ flex-direction: column; gap: .3rem; }
+  .fact-list li span:last-child{ text-align: left; max-width: 100%; }
+
+  .project-card{ padding: 1.5rem; }
+  .project-photo{ margin: -1.5rem -1.5rem 1.4rem; }
+  .project-card h3{ font-size: 1.3rem; }
+
+  .events-grid .pass-card:first-child .pass-body{ padding: 1.4rem; }
+  .pass-body{ padding: 1.4rem; }
+
+  .split{ gap: 2rem; }
+  .role-list li{ flex-direction: column; gap: .3rem; }
+  .role-list li .role{ text-align: left; }
+  .lang-row{ gap: 1.6rem; }
+
+  .contact-panel{ padding: 3rem 1.4rem; border-radius: 18px; }
+  .contact-actions{ flex-direction: column; width: 100%; }
+  .btn{ justify-content: center; width: 100%; }
+  .contact-links{ gap: 1rem 1.4rem; }
+
+  .event-hero{ padding: 7.5rem 0 3rem; }
+  .event-meta-row{ flex-direction: column; gap: 1.2rem; }
 }
