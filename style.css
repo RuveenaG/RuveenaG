@@ -432,17 +432,6 @@ section{ padding: 7.5rem 0; position: relative; }
   display:flex; flex-direction:column; justify-content:center;
   padding-top: 6rem; position: relative;
 }
-.hero::before{
-  content:"";
-  position:absolute; inset:0;
-  background-image:
-    linear-gradient(var(--panel-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--panel-line) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 60% 50% at 50% 30%, black, transparent);
-  opacity: .35;
-  pointer-events:none;
-}
 .hero-flex{
   display: grid;
   grid-template-columns: 1.55fr 0.75fr;
@@ -1274,6 +1263,42 @@ body.cv-modal-open{
   .events-grid{ grid-template-columns: 1fr 1fr; }
   .photo-gallery{ grid-template-columns: repeat(2,1fr); }
 
+  /* --- hamburger toggle visible --- */
+  .nav-toggle{ display: flex; }
+
+  /* --- nav links: hidden drawer, slides down when open --- */
+  .nav-links{
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(8,16,12,0.97);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 5rem 2rem 3rem;
+    z-index: 99;
+    /* hidden by default */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px);
+    transition: opacity .3s var(--ease), transform .3s var(--ease);
+    min-height: 100dvh;
+  }
+  .nav-links.is-open{
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .nav-links a{
+    font-size: 1.1rem;
+    letter-spacing: 0.12em;
+  }
+
+  /* --- prevent body scroll when menu open --- */
+  body.nav-open{ overflow: hidden; }
+
   .hero-flex{ grid-template-columns: 1fr; text-align:center; gap: 2.4rem; }
   .hero-portrait{ order: -1; }
   .hero-portrait-frame{ width: min(220px, 62vw); }
@@ -1305,7 +1330,6 @@ body.cv-modal-open{
   .hero-actions .btn{ width: 100%; justify-content: center; }
   .hero-meta{ gap: .7rem; }
   .chip{ font-size: .7rem; padding: .5rem .85rem; }
-  .scroll-cue{ display: none; }
 
   .cv-modal{ padding: 0.6rem; }
   .cv-modal-window{ height: 94vh; }
