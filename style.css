@@ -396,16 +396,25 @@ section{ padding: 7.5rem 0; position: relative; }
   box-shadow: 0 0 8px rgba(201,164,65,0.7);
 }
 
-/* hamburger toggle — hidden on desktop */
 .nav-toggle{
   display: none;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 34px; height: 34px;
-  background: none; border: none; cursor: pointer;
-  z-index: 101;
-  padding: 0;
+  width: 38px; height: 38px;
+  background: rgba(8,16,12,0.7);
+  border: 1px solid var(--panel-line);
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  z-index: 102;
+  padding: 8px 7px;
+  pointer-events: auto;
+  transition: border-color .3s, background .3s;
+}
+.nav-toggle:hover{
+  border-color: var(--gold-soft);
+  background: rgba(201,164,65,0.12);
 }
 .nav-toggle span{
   display:block; width: 100%; height: 1.5px; background: var(--ivory);
@@ -851,11 +860,11 @@ section{ padding: 7.5rem 0; position: relative; }
 /* ---------- events (signature: achievement passes) ---------- */
 .events-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap: 1.6rem; }
 .events-grid .pass-card:first-child{ grid-column: 1 / -1; flex-direction: row; }
-.events-grid .pass-card:first-child .pass-photo{ flex: 0 0 38%; aspect-ratio: unset; border-bottom: none; border-right: 1px dashed var(--panel-line); }
+.events-grid .pass-card:first-child .pass-photo{ flex: 0 0 42%; aspect-ratio: unset; border-bottom: none; border-right: 1px dashed var(--panel-line); }
 .events-grid .pass-card:first-child .pass-body{ flex: 1; }
 @media (max-width: 760px){
   .events-grid .pass-card:first-child{ flex-direction: column; }
-  .events-grid .pass-card:first-child .pass-photo{ flex: none; aspect-ratio: 21/9; border-right: none; border-bottom: 1px dashed var(--panel-line); }
+  .events-grid .pass-card:first-child .pass-photo{ flex: none; aspect-ratio: 16/10; border-right: none; border-bottom: 1px dashed var(--panel-line); }
 }
 .pass-card{
   position:relative;
@@ -1414,73 +1423,152 @@ body.cv-modal-open{
   margin-top: .2rem;
 }
 
-/* ---------- Legathon mosaic: 1 big + 2 small ---------- */
-.pass-photo-mosaic{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 3px;
-  background: var(--panel-line);
-  padding: 0;
-  align-items: stretch;
-  justify-content: normal;
-}
-
-.pass-photo-mosaic .photo-main{
-  grid-column: 1 / -1;
-  aspect-ratio: 16/9;
-}
-
-.pass-photo-mosaic .photo-sub{
-  aspect-ratio: 4/3;
-}
-
-.pass-photo-mosaic .photo-slot{
+/* ---------- Legathon Photo Slider (Full-size interactive slides) ---------- */
+.pass-photo-slider{
   position: relative;
-  background:
-    repeating-linear-gradient(135deg, rgba(201,164,65,0.05) 0 10px, transparent 10px 20px),
-    linear-gradient(160deg, var(--emerald), #0a1a13);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: .4rem;
   overflow: hidden;
+  background: var(--panel);
+  display: block;
 }
 
-.pass-photo-mosaic .photo-slot img{
+.pass-photo-slider .slider-track{
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pass-photo-slider .slider-slide{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.65s var(--ease), visibility 0.65s var(--ease);
   z-index: 1;
+}
+
+.pass-photo-slider .slider-slide.active{
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+
+.pass-photo-slider .slider-slide img{
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center center;
+  object-position: center top;
   display: block;
-  transition: transform 0.6s var(--ease);
-}
-.pass-card:hover .pass-photo-mosaic .photo-slot img{
-  transform: scale(1.04);
+  transition: transform 0.7s var(--ease);
 }
 
-.pass-photo-mosaic .photo-slot svg{
-  width: 20px;
-  height: 20px;
-  stroke: var(--gold-dim);
-}
-.pass-photo-mosaic .photo-slot span{
-  font-family: var(--font-mono);
-  font-size: .6rem;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--sage);
-  text-align: center;
-  padding: 0 .5rem;
+.pass-card:hover .pass-photo-slider .slider-slide img{
+  transform: scale(1.03);
 }
 
-.pass-photo-mosaic .stamp{
+/* Slider Controls & Caption Overlay */
+.slider-controls{
   position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 3;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  padding: 1.4rem 1rem 0.75rem;
+  background: linear-gradient(to top, rgba(8,16,12,0.88) 0%, rgba(8,16,12,0.4) 65%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  pointer-events: none;
+}
+
+.slider-caption{
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--ivory);
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  transition: opacity 0.3s ease;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slider-dots{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.slider-dot{
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.35);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: width 0.3s var(--ease), background 0.3s var(--ease);
+}
+
+.slider-dot.active{
+  width: 22px;
+  background: var(--gold-soft);
+  box-shadow: 0 0 8px rgba(201,164,65,0.6);
+}
+
+/* Prev / Next Arrows */
+.slider-btn{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(8,16,12,0.65);
+  border: 1px solid rgba(201,164,65,0.3);
+  color: var(--gold-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease), background 0.25s, border-color 0.25s, transform 0.25s;
+  padding: 0;
+}
+
+.slider-btn svg{
+  width: 16px;
+  height: 16px;
+  stroke: var(--gold-soft);
+}
+
+.slider-prev{ left: 10px; }
+.slider-next{ right: 10px; }
+
+.pass-photo-slider:hover .slider-btn{
+  opacity: 1;
+}
+
+.slider-btn:hover{
+  background: rgba(201,164,65,0.25);
+  border-color: var(--gold);
+  color: #fff;
+  transform: translateY(-50%) scale(1.1);
+}
+
+@media (max-width: 760px){
+  .slider-btn{
+    opacity: 0.85;
+    width: 28px;
+    height: 28px;
+  }
 }

@@ -528,13 +528,32 @@
       navLinks.classList.add('is-open');
       document.body.classList.add('nav-open');
     };
-    navToggle.addEventListener('click', () => {
+
+    navToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
       const isOpen = navLinks.classList.contains('is-open');
       isOpen ? closeMenu() : openMenu();
     });
+
+    // Close when clicking any nav link
     navLinks.querySelectorAll('a').forEach((a) => {
       a.addEventListener('click', closeMenu);
     });
+
+    // Close when clicking on the backdrop outside links
+    navLinks.addEventListener('click', (e) => {
+      if (e.target === navLinks) {
+        closeMenu();
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navLinks.classList.contains('is-open')) {
+        closeMenu();
+      }
+    });
+
     window.addEventListener('resize', () => {
       if (window.innerWidth > 900) closeMenu();
     });
@@ -593,5 +612,83 @@
         closeModal();
       }
     });
+  }
+
+  /* =========================================================
+     13. LEGATHON EVENT PHOTO SLIDER
+     ========================================================= */
+  const sliderEl = document.getElementById('legathonSlider');
+  if (sliderEl) {
+    const slides = sliderEl.querySelectorAll('.slider-slide');
+    const dots = sliderEl.querySelectorAll('.slider-dot');
+    const prevBtn = document.getElementById('sliderPrev');
+    const nextBtn = document.getElementById('sliderNext');
+    const captionEl = document.getElementById('sliderCaption');
+    let currentIndex = 0;
+    let timer = null;
+
+    const showSlide = (index) => {
+      currentIndex = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentIndex);
+      });
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+      if (captionEl && slides[currentIndex]) {
+        const cap = slides[currentIndex].getAttribute('data-caption') || '';
+        captionEl.innerHTML = cap;
+      }
+    };
+
+    const nextSlide = () => showSlide(currentIndex + 1);
+    const prevSlide = () => showSlide(currentIndex - 1);
+
+    const startAutoPlay = () => {
+      if (isReducedMotion) return;
+      stopAutoPlay();
+      timer = setInterval(nextSlide, 4500);
+    };
+
+    const stopAutoPlay = () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); startAutoPlay(); });
+    if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); startAutoPlay(); });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.getAttribute('data-index') || '0', 10);
+        showSlide(idx);
+        startAutoPlay();
+      });
+    });
+
+    sliderEl.addEventListener('mouseenter', stopAutoPlay);
+    sliderEl.addEventListener('mouseleave', startAutoPlay);
+
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    sliderEl.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      stopAutoPlay();
+    }, { passive: true });
+
+    sliderEl.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) nextSlide();
+        else prevSlide();
+      }
+      startAutoPlay();
+    }, { passive: true });
+
+    startAutoPlay();
   }
 })();
