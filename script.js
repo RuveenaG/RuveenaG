@@ -691,4 +691,93 @@
 
     startAutoPlay();
   }
+
+  /* =========================================================
+     14. FULL PHOTO LIGHTBOX VIEWER
+     ========================================================= */
+  const lightbox = document.getElementById('photoLightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  const lightboxCounter = document.getElementById('lightboxCounter');
+  const lightboxClose = document.getElementById('lightboxClose');
+  const lightboxBackdrop = document.getElementById('lightboxBackdrop');
+  const lightboxPrev = document.getElementById('lightboxPrev');
+  const lightboxNext = document.getElementById('lightboxNext');
+  const zoomBtn = document.getElementById('sliderZoomBtn');
+
+  if (lightbox && lightboxImg) {
+    const photoList = [
+      {
+        src: 'images/legathon-photo.jpeg',
+        caption: 'Legathon MaxUp 2026 — Team Sri Lanka on Stage in Astana, Kazakhstan'
+      },
+      {
+        src: 'images/legathon-photo2.jpg',
+        caption: 'Legathon MaxUp 2026 — Global Finalists Group at M. Narikbayev University'
+      },
+      {
+        src: 'images/legathon-photo3.jpeg',
+        caption: 'Legathon MaxUp 2026 — Lex Fantastic Stage (Debate & Presentation Round)'
+      }
+    ];
+
+    let currentLbIndex = 0;
+
+    const updateLightbox = (idx) => {
+      currentLbIndex = (idx + photoList.length) % photoList.length;
+      const photo = photoList[currentLbIndex];
+      lightboxImg.src = photo.src;
+      lightboxImg.alt = photo.caption;
+      if (lightboxCaption) lightboxCaption.textContent = photo.caption;
+      if (lightboxCounter) lightboxCounter.textContent = `${currentLbIndex + 1} / ${photoList.length}`;
+    };
+
+    const openLightbox = (idx = 0) => {
+      updateLightbox(idx);
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+
+    if (zoomBtn) {
+      zoomBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const activeSlide = document.querySelector('.slider-slide.active');
+        const activeDot = document.querySelector('.slider-dot.active');
+        const idx = activeDot ? parseInt(activeDot.getAttribute('data-index') || '0', 10) : 0;
+        openLightbox(idx);
+      });
+    }
+
+    // Click on slider image to open lightbox
+    document.querySelectorAll('.slider-slide img').forEach((img, i) => {
+      img.addEventListener('click', () => {
+        openLightbox(i);
+      });
+    });
+
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxBackdrop) lightboxBackdrop.addEventListener('click', closeLightbox);
+    if (lightboxPrev) lightboxPrev.addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateLightbox(currentLbIndex - 1);
+    });
+    if (lightboxNext) lightboxNext.addEventListener('click', (e) => {
+      e.stopPropagation();
+      updateLightbox(currentLbIndex + 1);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('is-open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      else if (e.key === 'ArrowLeft') updateLightbox(currentLbIndex - 1);
+      else if (e.key === 'ArrowRight') updateLightbox(currentLbIndex + 1);
+    });
+  }
 })();
